@@ -1,10 +1,12 @@
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
+using TVApp.Data;
 
 namespace TVApp
 {
@@ -26,6 +28,18 @@ namespace TVApp
             {
                 configuration.RootPath = "ClientApp/dist";
             });
+
+            services.AddDbContext<DisciplineContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("DisciplineContext")));
+
+            services.AddDbContext<ParticipantsContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("ParticipantsContext")));
+
+            services.AddDbContext<ResultsContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("ResultsContext")));
+
+            services.AddDbContext<ScoreTablesContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("ScoreTablesContext")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
