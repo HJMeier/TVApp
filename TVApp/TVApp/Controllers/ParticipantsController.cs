@@ -10,28 +10,36 @@ using TVApp.Models;
 
 namespace TVApp.Controllers
 {
+    [Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
     public class ParticipantsController : ControllerBase
     {
         private readonly ParticipantsContext _context;
+        private readonly IDataRepository<Participant> _repo;
 
-        public ParticipantsController(ParticipantsContext context)
+        public ParticipantsController(ParticipantsContext context, IDataRepository<Participant> repo)
         {
             _context = context;
+            _repo = repo;
         }
 
         // GET: api/Participants
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Participant>>> GetParticipant()
+        public IEnumerable<Participant> GetBlogPosts()
         {
-            return await _context.Participant.ToListAsync();
+            return _context.Participant.OrderByDescending(p => p.ParticipantId);
         }
 
-        // GET: api/Participants/5
+        // GET: api/BlogPosts/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Participant>> GetParticipant(int id)
+        public async Task<IActionResult> GetParticipant([FromRoute] int id)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var participant = await _context.Participant.FindAsync(id);
 
             if (participant == null)
@@ -39,15 +47,18 @@ namespace TVApp.Controllers
                 return NotFound();
             }
 
-            return participant;
+            return Ok(participant);
         }
 
-        // PUT: api/Participants/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
+        // PUT: api/BlogPosts/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutParticipant(int id, Participant participant)
+        public async Task<IActionResult> PutParticipant([FromRoute] int id, [FromBody] Participant participant)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             if (id != participant.ParticipantId)
             {
                 return BadRequest();
@@ -57,7 +68,8 @@ namespace TVApp.Controllers
 
             try
             {
-                await _context.SaveChangesAsync();
+                _repo.Update(participant);
+                var save = await _repo.SaveAsync(participant);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -74,32 +86,40 @@ namespace TVApp.Controllers
             return NoContent();
         }
 
-        // POST: api/Participants
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
+        // POST: api/BlogPosts
         [HttpPost]
-        public async Task<ActionResult<Participant>> PostParticipant(Participant participant)
+        public async Task<IActionResult> ParticipantPost([FromBody] Participant participant)
         {
-            _context.Participant.Add(participant);
-            await _context.SaveChangesAsync();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            return CreatedAtAction("GetParticipant", new { id = participant.ParticipantId }, participant);
+            _repo.Add(participant);
+            var save = await _repo.SaveAsync(participant);
+
+            return CreatedAtAction("GetParticipantPost", new { id = participant.ParticipantId }, participant);
         }
 
-        // DELETE: api/Participants/5
+        // DELETE: api/BlogPosts/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Participant>> DeleteParticipant(int id)
+        public async Task<IActionResult> DeleteParticipant([FromRoute] int id)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var participant = await _context.Participant.FindAsync(id);
             if (participant == null)
             {
                 return NotFound();
             }
 
-            _context.Participant.Remove(participant);
-            await _context.SaveChangesAsync();
+            _repo.Delete(participant);
+            var save = await _repo.SaveAsync(participant);
 
-            return participant;
+            return Ok(participant);
         }
 
         private bool ParticipantExists(int id)
