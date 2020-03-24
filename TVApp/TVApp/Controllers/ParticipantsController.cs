@@ -26,12 +26,12 @@ namespace TVApp.Controllers
 
         // GET: api/Participants
         [HttpGet]
-        public IEnumerable<Participant> GetBlogPosts()
+        public IEnumerable<Participant> GetParticipants()
         {
             return _context.Participant.OrderByDescending(p => p.ParticipantId);
         }
 
-        // GET: api/BlogPosts/5
+        // GET: api/Participants/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetParticipant([FromRoute] int id)
         {
@@ -50,7 +50,7 @@ namespace TVApp.Controllers
             return Ok(participant);
         }
 
-        // PUT: api/BlogPosts/5
+        // PUT: api/Participants/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutParticipant([FromRoute] int id, [FromBody] Participant participant)
         {
@@ -86,9 +86,9 @@ namespace TVApp.Controllers
             return NoContent();
         }
 
-        // POST: api/BlogPosts
+        // POST: api/Participants
         [HttpPost]
-        public async Task<IActionResult> ParticipantPost([FromBody] Participant participant)
+        public async Task<IActionResult> Participant([FromBody] Participant participant)
         {
             if (!ModelState.IsValid)
             {
@@ -98,10 +98,10 @@ namespace TVApp.Controllers
             _repo.Add(participant);
             var save = await _repo.SaveAsync(participant);
 
-            return CreatedAtAction("GetParticipantPost", new { id = participant.ParticipantId }, participant);
+            return CreatedAtAction("GetParticipant", new { id = participant.ParticipantId }, participant);
         }
 
-        // DELETE: api/BlogPosts/5
+        // DELETE: api/Participants/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteParticipant([FromRoute] int id)
         {
