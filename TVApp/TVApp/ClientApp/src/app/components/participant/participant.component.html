@@ -73,6 +73,7 @@
           <th scope="col">Geburtsjahr</th>
           <th scope="col">Verein</th>
           <th scope="col">Kategorie</th>
+          <th scope="col">Bearbeiten</th>
         </tr>
 
       </thead>
@@ -82,6 +83,8 @@
           <td>{{participant.preName}}</td>
           <td>{{participant.name}}</td>
           <td>{{participant.yearOfBirth}}</td>
+          <td>{{participant.club}}</td>
+          <td>{{participant.cathegory}}</td>
           <td>
             <button (click)="deleteParticipant(participant)"
                     class="btn-primary btn-default btn-sm">
