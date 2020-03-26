@@ -1,4 +1,4 @@
-﻿
+﻿using TVApp.Models;
 using System.Threading.Tasks;
 
 namespace TVApp.Data
