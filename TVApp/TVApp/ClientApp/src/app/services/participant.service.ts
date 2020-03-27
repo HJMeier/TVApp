@@ -4,7 +4,7 @@ import { DataService } from './data-service';
 import { environment } from '../../environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root' 
 })
 export class ParticipantService extends DataService {
 
