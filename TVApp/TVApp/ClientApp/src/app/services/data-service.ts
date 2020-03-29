@@ -19,7 +19,8 @@ export class DataService {
   constructor(private url: string, private http: HttpClient) { }
 
   getAll() {
-    return this.http.get<Participant[]>(this.url)
+    return this.http.get<any[]>(this.url)
+    //return this.http.get<Participant[]>(this.url)
       .pipe(catchError(this.handleError))
   };
 
@@ -65,14 +66,3 @@ export class DataService {
   }
 
 }
-  
-
-interface Participant {
-  ParticipantId: number,
-  PreName: string;
-  Name: string;
-  YearOfBirth: number;
-  Club: string;
-  Cathegory: string;
-}
-

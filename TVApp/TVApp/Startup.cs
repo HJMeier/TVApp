@@ -28,6 +28,8 @@ namespace TVApp
 
             services.AddDbContext<ParticipantsContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("ParticipantsContext")));
+            services.AddDbContext<ResultsContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("ResultsContext")));
 
             services.AddCors(options =>
             {
@@ -40,6 +42,7 @@ namespace TVApp
             });
 
             services.AddScoped(typeof(IDataRepository<>), typeof(DataRepository<>));
+            services.AddScoped(typeof(IDataRepository<>), typeof(ResultsDataRepository<>));
 
 
             // In production, the Angular files will be served from this directory

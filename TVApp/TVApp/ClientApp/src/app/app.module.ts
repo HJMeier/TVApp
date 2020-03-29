@@ -12,6 +12,7 @@ import { ResultComponent } from './components/result/result.component';
 import { DisciplineComponent } from './components/discipline/discipline.component';
 import { DataService } from './services/data-service';
 import { ParticipantService } from './services/participant.service';
+import { ResultService } from './services/result.service';
 import { AppErrorHandler } from './common/app-error-handler';
 
 @NgModule({
@@ -37,6 +38,7 @@ import { AppErrorHandler } from './common/app-error-handler';
   ],
   providers: [
     ParticipantService,
+    ResultService,
     DataService,
     { provide: ErrorHandler, useClass: AppErrorHandler } // replaces globally ErrorHandler by AppErrorHandler
   ],

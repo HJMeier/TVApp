@@ -10,28 +10,36 @@ using TVApp.Models;
 
 namespace TVApp.Controllers
 {
+    [Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
     public class ResultsController : ControllerBase
     {
         private readonly ResultsContext _context;
+        private readonly IDataRepository<Result> _repo;
 
-        public ResultsController(ResultsContext context)
+        public ResultsController(ResultsContext context, IDataRepository<Result> repo)
         {
             _context = context;
+            _repo = repo;
         }
 
         // GET: api/Results
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Result>>> GetResult()
+        public IEnumerable<Result> GetResults()
         {
-            return await _context.Result.ToListAsync();
+            return _context.Result.OrderByDescending(p => p.ResultId);
         }
 
         // GET: api/Results/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Result>> GetResult(int id)
+        public async Task<IActionResult> GetResult([FromRoute] int id)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var result = await _context.Result.FindAsync(id);
 
             if (result == null)
@@ -39,16 +47,19 @@ namespace TVApp.Controllers
                 return NotFound();
             }
 
-            return result;
+            return Ok(result);
         }
 
         // PUT: api/Results/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutResult(int id, Result result)
+        public async Task<IActionResult> PutResult([FromRoute] int id, [FromBody] Result result)
         {
-            if (id != result.Id)
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (id != result.ResultId)
             {
                 return BadRequest();
             }
@@ -57,7 +68,8 @@ namespace TVApp.Controllers
 
             try
             {
-                await _context.SaveChangesAsync();
+                _repo.Update(result);
+                var save = await _repo.SaveAsync(result);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -75,36 +87,44 @@ namespace TVApp.Controllers
         }
 
         // POST: api/Results
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<Result>> PostResult(Result result)
+        public async Task<IActionResult> PostResult([FromBody] Result result)
         {
-            _context.Result.Add(result);
-            await _context.SaveChangesAsync();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            return CreatedAtAction("GetResult", new { id = result.Id }, result);
+            _repo.Add(result);
+            var save = await _repo.SaveAsync(result);
+
+            return CreatedAtAction("GetResult", new { id = result.ResultId }, result);
         }
 
         // DELETE: api/Results/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Result>> DeleteResult(int id)
+        public async Task<IActionResult> DeleteResult([FromRoute] int id)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var result = await _context.Result.FindAsync(id);
             if (result == null)
             {
                 return NotFound();
             }
 
-            _context.Result.Remove(result);
-            await _context.SaveChangesAsync();
+            _repo.Delete(result);
+            var save = await _repo.SaveAsync(result);
 
-            return result;
+            return Ok(result);
         }
 
         private bool ResultExists(int id)
         {
-            return _context.Result.Any(e => e.Id == id);
+            return _context.Result.Any(e => e.ResultId == id);
         }
     }
 }

@@ -7,13 +7,13 @@ namespace TVApp.Models
     //any changes to data model -> Packet Manager Console: Add-Migration YourMigration Name and Update-Database
     {
         [Key]
-        public int Id { get; set; }
+        public int ResultId { get; set; }
 
         [Required]
         public int ParticipantId { get; set; }
 
         [Required]
-        public string Discipline { get; set; }
+        public int DisciplineId { get; set; }
 
         [Required]
         public float DisciplineResult { get; set; }
