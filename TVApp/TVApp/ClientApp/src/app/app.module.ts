@@ -39,7 +39,7 @@ import { AppErrorHandler } from './common/app-error-handler';
   providers: [
     ParticipantService,
     ResultService,
-    DataService,
+    //DataService,
     { provide: ErrorHandler, useClass: AppErrorHandler } // replaces globally ErrorHandler by AppErrorHandler
   ],
   bootstrap: [AppComponent]

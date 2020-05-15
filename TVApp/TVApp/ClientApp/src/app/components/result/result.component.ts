@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { ResultService } from '../../services/result.service';
 import { AppError } from '../../common/app-error';
 import { NotFoundError } from '../../common/not-found-error';
 import { BadInput } from '../../common/bad-input';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { ParticipantComponent } from '../participant/participant.component';
 
 @Component({
   selector: 'app-result',
@@ -12,6 +13,9 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 })
 
 export class ResultComponent implements OnInit {
+
+  @Input() participants: ParticipantComponent[];
+
   form = new FormGroup({
     'participant': new FormControl('', Validators.required),
     'discipline': new FormControl('', Validators.required),

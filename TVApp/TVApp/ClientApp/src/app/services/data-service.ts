@@ -11,9 +11,9 @@ import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 
 
-@Injectable({
+/*@Injectable({
   providedIn: 'root'
-})
+})*/
 export class DataService {
   
   constructor(private url: string, private http: HttpClient) { }
